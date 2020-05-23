@@ -2,7 +2,7 @@ import yaml
 from scipy.spatial import Voronoi, voronoi_plot_2d
 import numpy as np
 import matplotlib.pyplot as plt
-from straightline_solver import solve
+from brute_force_solver import solve
 
 
 def plot_voronoi():
