@@ -8,7 +8,7 @@ from straightline_solver import solve
 def plot_voronoi():
 	with open("portals.yaml", "r") as fp:
 		portals = yaml.load(fp)
-	points = np.array([p for p in portals.values()])
+	points = np.array([p for p in portals.values()])/8
 	vpoints = Voronoi(points)
 	res = solve(vpoints)
 	print(f"loss {loss(res):.1f}")
