@@ -1,2 +1,2 @@
-# minecraft_portal
+# MinecraftPortalLinker
 helps to link minecraft portals efficiently
