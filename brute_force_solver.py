@@ -2,7 +2,7 @@ import numpy as np
 
 
 def solve(vpoint):
-	points = vpoint.points/8
+	points = vpoint.points
 	av = np.mean(points, axis=0)
 	x_min, z_min = np.min(points, axis=0)
 	x_max, z_max = np.max(points, axis=0)
@@ -17,7 +17,7 @@ def solve(vpoint):
 	for i in range(n_points):
 		region_i = np.array(region[i])
 		res[i] = region_i[np.int(np.argmin(np.linalg.norm(region_i - av, axis=1)))]
-	return 8*np.array(res)
+	return np.array(res)
 
 
 def build_network(x_min, z_min, x_max, z_max):
