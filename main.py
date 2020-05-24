@@ -14,10 +14,10 @@ def plot_solve(solve):
 	res = solve(vor)
 	delta = time()-start
 	print(f"loss {loss(res):.1f} (in {int(delta*1000)} ms)")
-	voronoi_plot_2d(vor)
+	voronoi_plot_2d(vor, show_vertices=False)
 	plt.scatter(res[:, 0], res[:, 1], marker="x", color='red', zorder=10)
 	for i, name in enumerate(portals.keys()):
-		plt.annotate(name, (points[i, 0], points[i, 1]+0.04*(vor.min_bound[0]-vor.max_bound[0])), ha="center")
+		plt.annotate(name, (points[i, 0], points[i, 1]+0.03*(vor.min_bound[0]-vor.max_bound[0])), ha="center")
 	plt.title("Optimal portal repartition")
 	plt.ylabel("z")
 	plt.xlabel("x")
