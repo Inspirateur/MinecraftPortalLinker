@@ -8,10 +8,14 @@ import matplotlib.pyplot as plt
 def plot_solve(solve):
 	with open("portals.yaml", "r") as fp:
 		portals = yaml.load(fp)
-	points = np.array([p for p in portals.values()])/8
+	points = np.array([p for p in portals.values()])
 	vor = Voronoi(points)
 	start = time()
 	res = solve(vor)
+	maxlen = max(len(name) for name in portals.keys())+1
+	for name, point in zip(portals.keys(), points):
+		p = point/8
+		print(f"{(name+':').ljust(maxlen)} {p[0]:.1f};{p[1]:.1f}")
 	delta = time()-start
 	print(f"loss {loss(res):.1f} (in {int(delta*1000)} ms)")
 	voronoi_plot_2d(vor, show_vertices=False)
