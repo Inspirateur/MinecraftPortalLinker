@@ -15,7 +15,7 @@ def plot_solve(solve):
 	res = solve(vor)
 	delta = time()-start
 	maxlen = max(len(name) for name in portals.keys())+1
-	for name, p in zip(portals.keys(), points):
+	for name, p in zip(portals.keys(), res):
 		print(f"{(name+':').ljust(maxlen)} {p[0]:.1f};{p[1]:.1f}")
 	print(f"loss {loss(res):.1f} (in {int(delta*1000)} ms)")
 	fig, ax = plt.subplots()
