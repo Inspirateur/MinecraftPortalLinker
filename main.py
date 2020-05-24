@@ -21,7 +21,7 @@ def plot_solve(solve):
 	plt.title("Optimal portal repartition")
 	plt.ylabel("z")
 	plt.xlabel("x")
-	plt.gca().invert_xaxis()
+	plt.gca().invert_yaxis()
 	plt.gca().set_aspect('equal', adjustable='box')
 	plt.show()
 
