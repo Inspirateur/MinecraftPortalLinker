@@ -2,7 +2,7 @@ import numpy as np
 
 
 def solve(vpoint):
-	points = vpoint.points
+	points = vpoint.points/8
 	av = np.mean(points, axis=0)
 	x_min, z_min = np.min(points, axis=0)
 	x_max, z_max = np.max(points, axis=0)
