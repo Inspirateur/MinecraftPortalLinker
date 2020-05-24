@@ -13,7 +13,7 @@ def plot_solve(solve):
 	start = time()
 	res = solve(vor)
 	delta = time()-start
-	print(f"loss {loss(res):.1f} (in {delta:.1f} sec)")
+	print(f"loss {loss(res):.1f} (in {int(delta*1000)} ms)")
 	voronoi_plot_2d(vor)
 	plt.scatter(res[:, 0], res[:, 1], color='red')
 	for i, name in enumerate(portals.keys()):
