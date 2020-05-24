@@ -3,9 +3,9 @@ from scipy.spatial import Voronoi
 
 
 def intersect(p: np.ndarray, c: np.ndarray, rlines: np.ndarray) -> np.ndarray:
-	p = np.append(p, 1)
-	c = np.append(c, 1)
-	...
+	for line in rlines:
+		...
+	return p
 
 
 def reg_lines(vor) -> np.ndarray:
@@ -42,11 +42,10 @@ def solve(vor: Voronoi):
 	rlines = reg_lines(vor)
 	# iterate the solution
 	res = np.array(vor.points)
-	for _ in range(1):
-		# compute the center C of current solution
-		center = res.mean(axis=0)
-		# for each point P in the solution
-		for i in range(len(res)):
-			# compute the intersection between PC and the edges of P's region
-			res[i] = intersect(res[i], center, rlines[i])
+	# compute the center C of current solution
+	center = res.mean(axis=0)
+	# for each point P in the solution
+	for i in range(len(res)):
+		# compute the intersection between PC and the edges of P's region
+		res[i] = intersect(res[i], center, rlines[i])
 	return res
