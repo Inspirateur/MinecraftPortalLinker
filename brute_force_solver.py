@@ -1,33 +1,64 @@
 import numpy as np
+import matplotlib.pyplot as plt
+from tqdm import trange
+import matplotlib.ticker as ticker
+import sys
+from loss import mean_square
+from calculations import build_network, build_region, project, possible_portails, checking
 
 
-def solve(vpoint):
-	points = vpoint.points
-	av = np.mean(points, axis=0)
-	x_min, z_min = np.min(points, axis=0)
-	x_max, z_max = np.max(points, axis=0)
-	network = build_network(x_min, z_min, x_max, z_max)
-	n_points = len(points)
-	region = [[] for _ in range(n_points)]
-	for node in network:
-		nearest_p = np.int(np.argmin(np.linalg.norm(points - node, axis=1)))
-		region[nearest_p].append(node)
-	print("average =", av)
+def solve(portals, names):
+	m_0 = np.mean(portals, axis=(0, 1))
+	print(f"initial average mass of portals = {m_0} \n --------------------")
+
+	print(f"building network")
+	network, network_shape = build_network(portals)
+	print("network built \n --------------------")
+
+	region = build_region(network, network_shape, portals)
+	print("--------------------")
+
+	possible_portals = possible_portails(network, network_shape, portals, region, names)
+	print(" --------------------")
+
+	m_new = m_0
+	print("starting iterative projection of the mass center")
+	for j in range(666):
+		res_portals = project(possible_portals, m_new)
+		m_new = np.mean(res_portals, axis=(0, 1))
+		if (m_new == m_0).all():
+			print("converged in ", j+1, " itérations")
+			break
+		m_0 = m_new
+	else:
+		print("did not converged in saucisse iterations")
+	print(f"solution center = {m_new} \n  --------------------")
+	# loss_map(region, network, n_points)
+	checking(res_portals, portals, names)
+	return res_portals
+
+
+def loss_map(region, network, n_points):
+	x, y = network.T
+	len_network = len(network)
+	skip = 1
+	z = np.zeros((len_network-1)//skip + 1)
 	res = [[] for _ in range(n_points)]
-	for i in range(n_points):
-		region_i = np.array(region[i])
-		res[i] = region_i[np.int(np.argmin(np.linalg.norm(region_i - av, axis=1)))]
-	return np.array(res)
+	for n in trange(0, len_network, skip, desc="loss map", file=sys.stdout):
+		for i in range(n_points):
+			res[i] = region[i][np.int(np.argmin(np.linalg.norm(np.array(region[i]) - network[n], axis=1)))]
+		z[n//skip] = mean_square(np.array(res))
 
+	ind_min = np.argmin(z)
+	array_skip = np.arange(0, len_network - 1, skip)
+	print(f" le minimum est atteind pour m = ({x[array_skip][ind_min]}, {y[array_skip][ind_min]})")
 
-def build_network(x_min, z_min, x_max, z_max):
-	x_list = np.arange(np.trunc(x_min) - 1, x_max + 1)
-	z_list = np.arange(np.trunc(z_min) - 0.5, z_max + 1)
-	x_list, z_list = np.meshgrid(x_list, z_list)
-	netowrk_1 = np.array([x_list.flatten(), z_list.flatten()]).T
-	x_list = np.arange(np.trunc(x_min) - 0.5, x_max + 1)
-	z_list = np.arange(np.trunc(z_min) - 1, z_max + 1)
-	x_list, z_list = np.meshgrid(x_list, z_list)
-	netowrk_2 = np.array([x_list.flatten(), z_list.flatten()]).T
-	netowrk = np.concatenate([netowrk_1, netowrk_2])
-	return netowrk
+	fig = plt.figure()
+	ax = fig.gca(projection='3d')
+	ax.plot_trisurf(x[array_skip], y[array_skip], z, linewidth=0.2, antialiased=True)
+	plt.grid(linestyle="--")
+	ticks = ticker.FuncFormatter(lambda x, pos: '{0:g}'.format(x*8))
+	ax.xaxis.set_major_formatter(ticks)
+	ax.xaxis.set_major_locator(plt.MultipleLocator(100.0/8))
+	ax.yaxis.set_major_formatter(ticks)
+	ax.yaxis.set_major_locator(plt.MultipleLocator(100.0/8))
