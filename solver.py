@@ -10,7 +10,7 @@ def find_portals(ovw_portals, portals_names):
 	:return: optimal portals positions in the nether
 	"""
 	m_0 = np.mean(ovw_portals, axis=(0, 1))
-	m_0 = np.array([m_0[1]/8, m_0[1], m_0[2]])
+	m_0 = np.array([m_0[0]/8, m_0[1], m_0[2]/8])
 	print(f"initial average mass of portals = {m_0} \n --------------------")
 
 	print(f"building network")
